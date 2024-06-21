@@ -1,0 +1,13 @@
+server:
+  port: 18001
+
+eureka:
+  instance:
+    hostname: "eurekaServer18001"#这里就要改成hosts文件里面，集群设置的东西了
+  client:
+    register-with-eureka: false
+    fetch-registry: false #
+    service-url:
+      defaultZone: "http://eurekaServer18000:18000/eureka/" #使用$符号来表示变量
+  server:
+    enable-self-preservation: false
