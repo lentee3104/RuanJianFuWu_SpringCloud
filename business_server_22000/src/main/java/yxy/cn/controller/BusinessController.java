@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RefreshScope
-@RequestMapping("/api/business")
+@RequestMapping("/business")
 public class BusinessController {
     @Resource
     BusinessService businessService;

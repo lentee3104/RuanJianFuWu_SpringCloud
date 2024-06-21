@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/food")
+@RequestMapping("/food")
 public class FoodController {
     @Resource
     private FoodService foodService;
@@ -45,6 +45,15 @@ public class FoodController {
                 foodDTOList.add(foodDTO);
             }
             return new ResponseEntity<>(foodDTOList, HttpStatus.OK);
+        } catch (NumberFormatException | NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/FindByFoodId")
+    public ResponseEntity<FoodEntity> findByFoodId(Integer food_id){
+        try{
+            return new ResponseEntity<>(foodService.findByFoodId(food_id), HttpStatus.OK);
         } catch (NumberFormatException | NullPointerException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

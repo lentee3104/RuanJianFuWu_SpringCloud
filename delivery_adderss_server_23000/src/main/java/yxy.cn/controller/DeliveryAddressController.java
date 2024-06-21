@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/address")
+@RequestMapping("/address")
 @Tag(name = "DeliveryAddressController")
 public class DeliveryAddressController {
     @Resource
@@ -36,7 +36,7 @@ public class DeliveryAddressController {
             DeliveryAddressEntity deliveryAddressEntity = deliveryAddressService.deleteByDeliveryAddressId(da_id);
             CustomerEntity customerEntity = customerFeign.findByCustomerId(deliveryAddressEntity.getCustomerId()).getBody();
             DeliveryAddressDTO deliveryAddressDTO = DeliveryAddressDTO.builder()
-                    .deliveryAddressId(deliveryAddressEntity.getDeliveryAddressId())
+                    .daId(deliveryAddressEntity.getDeliveryAddressId())
                     .address(deliveryAddressEntity.getAddress())
                     .contactTel(deliveryAddressEntity.getContactTel())
                     .contactName(deliveryAddressEntity.getContactName())
@@ -51,14 +51,14 @@ public class DeliveryAddressController {
 
     @PostMapping("/FindByCustomerId")
     @Operation(summary = "FindByCustomerId")
-    public ResponseEntity<List<DeliveryAddressDTO>> findByCustomerId(@RequestParam Integer customer_id){
+    public ResponseEntity<List<DeliveryAddressDTO>> findByCustomerName(@RequestParam Integer customer_id){
         try{
             List<DeliveryAddressEntity> deliveryAddressEntityList = deliveryAddressService.findByCustomerId(customer_id);
             CustomerEntity customerEntity = customerFeign.findByCustomerId(customer_id).getBody();
             List<DeliveryAddressDTO> deliveryAddressDTOList = new ArrayList<>();
             for(DeliveryAddressEntity deliveryAddressEntity : deliveryAddressEntityList){
                 DeliveryAddressDTO deliveryAddressDTO = DeliveryAddressDTO.builder()
-                        .deliveryAddressId(deliveryAddressEntity.getDeliveryAddressId())
+                        .daId(deliveryAddressEntity.getDeliveryAddressId())
                         .address(deliveryAddressEntity.getAddress())
                         .contactTel(deliveryAddressEntity.getContactTel())
                         .contactName(deliveryAddressEntity.getContactName())
@@ -76,15 +76,14 @@ public class DeliveryAddressController {
 
     @PostMapping("/FindByCustomerName")
     @Operation(summary = "FindByCustomerName")
-    public ResponseEntity<List<DeliveryAddressDTO>> findByCustomerName(@RequestParam String customer_name){
+    public ResponseEntity<List<DeliveryAddressDTO>> findByCustomerName(@RequestParam String user_code){
         try{
-            CustomerEntity customerEntity = customerFeign.findByCustomerName(customer_name).getBody();
+            CustomerEntity customerEntity = customerFeign.findByCustomerName(user_code).getBody();
             List<DeliveryAddressEntity> deliveryAddressEntityList = deliveryAddressService.findByCustomerId(customerEntity.getCustomerId());
-
             List<DeliveryAddressDTO> deliveryAddressDTOList = new ArrayList<>();
             for(DeliveryAddressEntity deliveryAddressEntity : deliveryAddressEntityList){
                 DeliveryAddressDTO deliveryAddressDTO = DeliveryAddressDTO.builder()
-                        .deliveryAddressId(deliveryAddressEntity.getDeliveryAddressId())
+                        .daId(deliveryAddressEntity.getDeliveryAddressId())
                         .address(deliveryAddressEntity.getAddress())
                         .contactTel(deliveryAddressEntity.getContactTel())
                         .contactName(deliveryAddressEntity.getContactName())
@@ -104,11 +103,11 @@ public class DeliveryAddressController {
     @Transactional
     @PostMapping("/SaveAddress")
     @Operation(summary = "SaveAddress")
-    public ResponseEntity<DeliveryAddressDTO> save(@RequestParam Integer da_id, String contact_name, Integer contact_sex, String contact_tel, String address, Integer customer_id){
-        DeliveryAddressEntity deliveryAddressEntity = deliveryAddressService.save(da_id, contact_name, contact_sex, contact_tel, address, customer_id);
-        CustomerEntity customerEntity = customerFeign.findByCustomerId(deliveryAddressEntity.getCustomerId()).getBody();
+    public ResponseEntity<DeliveryAddressDTO> save(@RequestParam Integer da_id, String contact_name, Integer contact_sex, String contact_tel, String address, String user_code){
+        CustomerEntity customerEntity = customerFeign.findByCustomerName(user_code).getBody();
+        DeliveryAddressEntity deliveryAddressEntity = deliveryAddressService.save(da_id, contact_name, contact_sex, contact_tel, address, customerEntity.getCustomerId());
         DeliveryAddressDTO deliveryAddressDTO = DeliveryAddressDTO.builder()
-                .deliveryAddressId(deliveryAddressEntity.getDeliveryAddressId())
+                .daId(deliveryAddressEntity.getDeliveryAddressId())
                 .address(deliveryAddressEntity.getAddress())
                 .contactTel(deliveryAddressEntity.getContactTel())
                 .contactName(deliveryAddressEntity.getContactName())
@@ -125,7 +124,7 @@ public class DeliveryAddressController {
             DeliveryAddressEntity deliveryAddressEntity = deliveryAddressService.findByDeliveryAddressId(da_id);
             CustomerEntity customerEntity = customerFeign.findByCustomerId(deliveryAddressEntity.getCustomerId()).getBody();
             DeliveryAddressDTO deliveryAddressDTO = DeliveryAddressDTO.builder()
-                    .deliveryAddressId(deliveryAddressEntity.getDeliveryAddressId())
+                    .daId(deliveryAddressEntity.getDeliveryAddressId())
                     .address(deliveryAddressEntity.getAddress())
                     .contactTel(deliveryAddressEntity.getContactTel())
                     .contactName(deliveryAddressEntity.getContactName())

@@ -16,50 +16,39 @@ import java.util.Optional;
 public class OrderTableService {
     @Resource
     private final IOrderTableRepository iOrderTableRepository;
-    private final BusinessService businessService;
-    private final DeliveryAddressService deliveryAddressService;
-    private final UserService userService;
 
-    public OrderTableService(IOrderTableRepository iOrderTableRepository, BusinessService businessService, DeliveryAddressService deliveryAddressService, UserService userService) {
+    public OrderTableService(IOrderTableRepository iOrderTableRepository) {
         this.iOrderTableRepository = iOrderTableRepository;
-        this.businessService = businessService;
-        this.deliveryAddressService = deliveryAddressService;
-        this.userService = userService;
     }
 
-    public OrderTableEntity findByUserEntityCodeAndBusinessEntity_BusinessIdAndOrderState(String user_code, Integer business_id, Integer order_state){
-        return iOrderTableRepository.findByUserEntityCodeAndBusinessEntity_BusinessIdAndOrderState(user_code, business_id, order_state);
+    public OrderTableEntity findByCustomerIdAndBusinessIdAndOrderState(Integer customer_id, Integer business_id, Integer order_state){
+        return iOrderTableRepository.findByCustomerIdAndBusinessIdAndOrderState(customer_id, business_id, order_state);
     }
 
-    public OrderTableEntity findByOrderId(Integer order_id){
-        return iOrderTableRepository.findByOrderId(order_id);
+    public OrderTableEntity findByOrderTableId(Integer order_id){
+        return iOrderTableRepository.findByOrderTableId(order_id);
     }
 
     public OrderTableEntity save(Integer order_id, LocalDateTime order_data, Integer order_state, Double order_total, Integer business_id, Integer customer_id, Integer da_id){
-        BusinessEntity businessEntity = businessService.findByBusinessId(business_id);
-        Optional<UserEntity> userEntity = userService.getUserByCode(user_code);
-        UserEntity user = userEntity.get();
-        DeliveryAddressEntity deliveryAddressEntity = deliveryAddressService.findByDaId(da_id);
-
         if(order_id == 0){
             OrderTableEntity newOrderTable = OrderTableEntity.builder()
                     .orderDate(order_data)
                     .orderState(order_state)
                     .orderTotal(order_total)
                     .businessId(business_id)
-                    .customerId()
-                    .deliveryAddressEntity(deliveryAddressEntity)
+                    .customerId(customer_id)
+                    .deliveryAddressId(da_id)
                     .build();
             return iOrderTableRepository.save(newOrderTable);
         }else {
             OrderTableEntity newOrderTable = OrderTableEntity.builder()
-                    .orderId(order_id)
+                    .orderTableId(order_id)
                     .orderDate(order_data)
                     .orderState(order_state)
                     .orderTotal(order_total)
-                    .businessEntity(businessEntity)
-                    .userEntity(user)
-                    .deliveryAddressEntity(deliveryAddressEntity)
+                    .businessId(business_id)
+                    .customerId(customer_id)
+                    .deliveryAddressId(da_id)
                     .build();
             return iOrderTableRepository.save(newOrderTable);
         }

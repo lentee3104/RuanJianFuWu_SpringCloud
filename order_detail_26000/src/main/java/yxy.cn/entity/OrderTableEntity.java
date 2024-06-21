@@ -9,14 +9,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "OrderTable")
 public class OrderTableEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer orderTableId;
     public LocalDateTime orderDate = LocalDateTime.now();
     public Double orderTotal;

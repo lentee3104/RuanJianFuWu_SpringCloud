@@ -1,27 +1,25 @@
-package yxy.cn.entity;
+package yxy.cn.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import yxy.cn.entity.BusinessEntity;
+import yxy.cn.entity.CustomerEntity;
+import yxy.cn.entity.DeliveryAddressEntity;
 
 import java.time.LocalDateTime;
 
 @Data
-@Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "OrderTable")
-public class OrderTableEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class OrderTableDTO {
     public Integer orderTableId;
     public LocalDateTime orderDate = LocalDateTime.now();
     public Double orderTotal;
     public Integer orderState = 0;
-    public Integer customerId;
-    public Integer businessId;
-    private Integer deliveryAddressId;
+    public CustomerEntity customerEntity;
+    public BusinessEntity businessEntity;
+    private DeliveryAddressEntity deliveryAddressEntity;
 }
