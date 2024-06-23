@@ -8,5 +8,6 @@ import yxy.cn.entity.CustomerEntity;
 public interface ICustomerRepository extends JpaRepository<CustomerEntity, Integer> {
     CustomerEntity findByCustomerId(Integer customer_id);
     CustomerEntity findByCustomerName(String customer_name);
+    CustomerEntity findByCustomerNameAndPassword(String customer_name, String password);
 }
 

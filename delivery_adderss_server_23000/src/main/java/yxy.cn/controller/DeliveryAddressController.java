@@ -2,6 +2,7 @@ package yxy.cn.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import yxy.cn.dto.DeliveryAddressDTO;
 import yxy.cn.entity.CustomerEntity;
 import yxy.cn.entity.DeliveryAddressEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
+@RefreshScope
 @RequestMapping("/address")
 @Tag(name = "DeliveryAddressController")
 public class DeliveryAddressController {
@@ -41,7 +43,7 @@ public class DeliveryAddressController {
                     .contactTel(deliveryAddressEntity.getContactTel())
                     .contactName(deliveryAddressEntity.getContactName())
                     .contactSex(deliveryAddressEntity.getContactSex())
-                    .customerEntity(customerEntity)
+                    .userCode(customerEntity.getCustomerName())
                     .build();
             return new ResponseEntity<>(deliveryAddressDTO, HttpStatus.OK);
         } catch (NumberFormatException | NullPointerException e) {
@@ -63,7 +65,7 @@ public class DeliveryAddressController {
                         .contactTel(deliveryAddressEntity.getContactTel())
                         .contactName(deliveryAddressEntity.getContactName())
                         .contactSex(deliveryAddressEntity.getContactSex())
-                        .customerEntity(customerEntity)
+                        .userCode(customerEntity.getCustomerName())
                         .build();
 
                 deliveryAddressDTOList.add(deliveryAddressDTO);
@@ -88,7 +90,7 @@ public class DeliveryAddressController {
                         .contactTel(deliveryAddressEntity.getContactTel())
                         .contactName(deliveryAddressEntity.getContactName())
                         .contactSex(deliveryAddressEntity.getContactSex())
-                        .customerEntity(customerEntity)
+                        .userCode(customerEntity.getCustomerName())
                         .build();
 
                 deliveryAddressDTOList.add(deliveryAddressDTO);
@@ -112,7 +114,7 @@ public class DeliveryAddressController {
                 .contactTel(deliveryAddressEntity.getContactTel())
                 .contactName(deliveryAddressEntity.getContactName())
                 .contactSex(deliveryAddressEntity.getContactSex())
-                .customerEntity(customerEntity)
+                .userCode(customerEntity.getCustomerName())
                 .build();
         return new ResponseEntity<>(deliveryAddressDTO, HttpStatus.OK);
     }
@@ -129,7 +131,7 @@ public class DeliveryAddressController {
                     .contactTel(deliveryAddressEntity.getContactTel())
                     .contactName(deliveryAddressEntity.getContactName())
                     .contactSex(deliveryAddressEntity.getContactSex())
-                    .customerEntity(customerEntity)
+                    .userCode(customerEntity.getCustomerName())
                     .build();
 
             return new ResponseEntity<>(deliveryAddressDTO, HttpStatus.OK);

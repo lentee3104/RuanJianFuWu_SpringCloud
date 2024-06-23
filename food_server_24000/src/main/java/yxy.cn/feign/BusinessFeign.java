@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import yxy.cn.entity.BusinessEntity;
 
-@FeignClient("customer-server")
+@FeignClient("business-server")
 public interface BusinessFeign {
     @GetMapping("/business/FindByBusinessId")
     ResponseEntity<BusinessEntity> findByBusinessId(@PathVariable("business_id")Integer business_id);

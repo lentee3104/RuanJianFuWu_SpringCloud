@@ -6,7 +6,7 @@ spring:
   cloud:
     gateway:
       routes: #有多个配置的时候，就需要用  -
-        - id: consumerServer #自定义的id唯一性 即可
+        - id: customer-Server #自定义的id唯一性 即可
           #这里的lb 意味着 loadbalance缩写。因为eureka上面可能有多个同名服务，所以需要顺便启动loadbalance服务才可以
           uri: lb://customer-server #   访问的目标服务器的地址（或者在eureka上面注册的名字）
           predicates: #如果请求满足这里 断言 的东西，才会发到服务器那里。
@@ -21,10 +21,80 @@ spring:
                 #然后 后面加上 相应的链接  （但这个东西是需要gateway模块自己去实现的
                 fallbackUri: forward:/fallback #降级之后，只能传递给某个链接（这个链接来做降级操作。）
 
-        - id: providerServer
-          uri: lb://customer-server
-          predicates:
-            - Path=/user/**
+        - id: business-Server #自定义的id唯一性 即可
+          #这里的lb 意味着 loadbalance缩写。因为eureka上面可能有多个同名服务，所以需要顺便启动loadbalance服务才可以
+          uri: lb://business-server #   访问的目标服务器的地址（或者在eureka上面注册的名字）
+          predicates: #如果请求满足这里 断言 的东西，才会发到服务器那里。
+            #            - Path=/** #任意路径都可以进行访问
+            - Path=/business/**  #两个 ** 表示这里的东西是任意的。  会把这里的path转发给uri
+          #            - Path=/**  #两个 ** 表示这里的东西是任意的。  会把这里的path转发给uri
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: backendA
+                #fallbackUri这个参数必须以  forward:/ 开头
+                #然后 后面加上 相应的链接  （但这个东西是需要gateway模块自己去实现的
+                fallbackUri: forward:/fallback #降级之后，只能传递给某个链接（这个链接来做降级操作。）
+
+        - id: delivery-address-Server #自定义的id唯一性 即可
+          #这里的lb 意味着 loadbalance缩写。因为eureka上面可能有多个同名服务，所以需要顺便启动loadbalance服务才可以
+          uri: lb://delivery-address-server #   访问的目标服务器的地址（或者在eureka上面注册的名字）
+          predicates: #如果请求满足这里 断言 的东西，才会发到服务器那里。
+            #            - Path=/** #任意路径都可以进行访问
+            - Path=/address/**  #两个 ** 表示这里的东西是任意的。  会把这里的path转发给uri
+          #            - Path=/**  #两个 ** 表示这里的东西是任意的。  会把这里的path转发给uri
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: backendA
+                #fallbackUri这个参数必须以  forward:/ 开头
+                #然后 后面加上 相应的链接  （但这个东西是需要gateway模块自己去实现的
+                fallbackUri: forward:/fallback #降级之后，只能传递给某个链接（这个链接来做降级操作。）
+
+        - id: food-Server #自定义的id唯一性 即可
+          #这里的lb 意味着 loadbalance缩写。因为eureka上面可能有多个同名服务，所以需要顺便启动loadbalance服务才可以
+          uri: lb://food-server #   访问的目标服务器的地址（或者在eureka上面注册的名字）
+          predicates: #如果请求满足这里 断言 的东西，才会发到服务器那里。
+            #            - Path=/** #任意路径都可以进行访问
+            - Path=/food/**  #两个 ** 表示这里的东西是任意的。  会把这里的path转发给uri
+          #            - Path=/**  #两个 ** 表示这里的东西是任意的。  会把这里的path转发给uri
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: backendA
+                #fallbackUri这个参数必须以  forward:/ 开头
+                #然后 后面加上 相应的链接  （但这个东西是需要gateway模块自己去实现的
+                fallbackUri: forward:/fallback #降级之后，只能传递给某个链接（这个链接来做降级操作。）
+
+        - id: order-detail-Server #自定义的id唯一性 即可
+          #这里的lb 意味着 loadbalance缩写。因为eureka上面可能有多个同名服务，所以需要顺便启动loadbalance服务才可以
+          uri: lb://order-detail-server #   访问的目标服务器的地址（或者在eureka上面注册的名字）
+          predicates: #如果请求满足这里 断言 的东西，才会发到服务器那里。
+            #            - Path=/** #任意路径都可以进行访问
+            - Path=/orderDetail/**  #两个 ** 表示这里的东西是任意的。  会把这里的path转发给uri
+          #            - Path=/**  #两个 ** 表示这里的东西是任意的。  会把这里的path转发给uri
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: backendA
+                #fallbackUri这个参数必须以  forward:/ 开头
+                #然后 后面加上 相应的链接  （但这个东西是需要gateway模块自己去实现的
+                fallbackUri: forward:/fallback #降级之后，只能传递给某个链接（这个链接来做降级操作。）
+
+        - id: order-table-Server #自定义的id唯一性 即可
+          #这里的lb 意味着 loadbalance缩写。因为eureka上面可能有多个同名服务，所以需要顺便启动loadbalance服务才可以
+          uri: lb://order-table-server #   访问的目标服务器的地址（或者在eureka上面注册的名字）
+          predicates: #如果请求满足这里 断言 的东西，才会发到服务器那里。
+            #            - Path=/** #任意路径都可以进行访问
+            - Path=/orderTable/**  #两个 ** 表示这里的东西是任意的。  会把这里的path转发给uri
+          #            - Path=/**  #两个 ** 表示这里的东西是任意的。  会把这里的path转发给uri
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: backendA
+                #fallbackUri这个参数必须以  forward:/ 开头
+                #然后 后面加上 相应的链接  （但这个东西是需要gateway模块自己去实现的
+                fallbackUri: forward:/fallback #降级之后，只能传递给某个链接（这个链接来做降级操作。）
 
       globalcors: #是在gateway下面,需要分清楚
         cors-configurations:
@@ -57,8 +127,3 @@ resilience4j:
     instances:
       backendA:
         base-config: default
-
-
-
-
-

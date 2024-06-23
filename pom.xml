@@ -20,6 +20,7 @@
         <module>food_server_24000</module>
         <module>order_table_25000</module>
         <module>order_detail_26000</module>
+        <module>order_total_server_27000</module>
     </modules>
 
     <build>
@@ -194,8 +195,6 @@
                 <artifactId>springdoc-openapi-ui</artifactId>
                 <version>1.8.0</version>
             </dependency>
-
-
 
         </dependencies>
     </dependencyManagement>

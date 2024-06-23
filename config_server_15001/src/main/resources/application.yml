@@ -21,7 +21,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: busrefresh
+        include: bus-refresh
 
 
 eureka: #这里都是发给服务注册中心看的

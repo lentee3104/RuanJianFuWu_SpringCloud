@@ -1,6 +1,8 @@
 package yxy.cn.controller;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.Order;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import yxy.cn.dto.DeliveryAddressDTO;
 import yxy.cn.dto.OrderTableDTO;
 import yxy.cn.entity.BusinessEntity;
@@ -28,6 +30,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @CrossOrigin
+@RefreshScope
 @RequestMapping("/orderTable")
 @Tag(name = "OrderTable", description = "商品总订单部分" )
 public class OrderTableController {
@@ -41,19 +44,46 @@ public class OrderTableController {
     private DeliveryAddressFeign deliveryAddressFeign;
 
     @PostMapping("/FindByUserEntityCodeAndBusinessEntity_BusinessIdAndOrderState")
-    public ResponseEntity<OrderTableEntity> findByCustomerIdAndBusinessIdAndOrderState(String user_code, Integer business_id, Integer order_state){
+    public ResponseEntity<OrderTableDTO> findByCustomerIdAndBusinessIdAndOrderState(String user_code, Integer business_id, Integer order_state){
         try{
             CustomerEntity customerEntity = customerFeign.findByCustomerName(user_code).getBody();
-            return new ResponseEntity<>(orderTableService.findByCustomerIdAndBusinessIdAndOrderState(customerEntity.getCustomerId(), business_id, order_state), HttpStatus.OK);
+            OrderTableEntity orderTableEntity = orderTableService.findByCustomerIdAndBusinessIdAndOrderState(customerEntity.getCustomerId(), business_id, order_state);
+            BusinessEntity businessEntity = businessFeign.findByBusinessId(orderTableEntity.getBusinessId()).getBody();
+            DeliveryAddressDTO deliveryAddressDTO = deliveryAddressFeign.findByDeliveryAddressId(orderTableEntity.getDeliveryAddressId()).getBody();
+
+            OrderTableDTO orderTableDTO = OrderTableDTO.builder()
+                    .orderTableId(orderTableEntity.getOrderTableId())
+                    .orderDate(orderTableEntity.getOrderDate())
+                    .orderTotal(orderTableEntity.getOrderTotal())
+                    .orderState(orderTableEntity.getOrderState())
+                    .customerEntity(customerEntity)
+                    .businessEntity(businessEntity)
+                    .deliveryAddressDTO(deliveryAddressDTO)
+                    .build();
+            return new ResponseEntity<>(orderTableDTO, HttpStatus.OK);
         } catch (NumberFormatException | NullPointerException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/FindByOrderTableId")
-    public ResponseEntity<OrderTableEntity> findByOrderTableId(Integer order_table_id){
+    public ResponseEntity<OrderTableDTO> findByOrderTableId(Integer order_table_id){
         try{
-            return new ResponseEntity<>(orderTableService.findByOrderTableId(order_table_id), HttpStatus.OK);
+            OrderTableEntity orderTableEntity = orderTableService.findByOrderTableId(order_table_id);
+            BusinessEntity businessEntity = businessFeign.findByBusinessId(orderTableEntity.getBusinessId()).getBody();
+            CustomerEntity customerEntity = customerFeign.findByCustomerId(orderTableEntity.getCustomerId()).getBody();
+            DeliveryAddressDTO deliveryAddressDTO = deliveryAddressFeign.findByDeliveryAddressId(orderTableEntity.getDeliveryAddressId()).getBody();
+
+            OrderTableDTO orderTableDTO = OrderTableDTO.builder()
+                    .orderTableId(order_table_id)
+                    .orderDate(orderTableEntity.getOrderDate())
+                    .orderTotal(orderTableEntity.getOrderTotal())
+                    .orderState(orderTableEntity.getOrderState())
+                    .customerEntity(customerEntity)
+                    .businessEntity(businessEntity)
+                    .deliveryAddressDTO(deliveryAddressDTO)
+                    .build();
+            return new ResponseEntity<>(orderTableDTO, HttpStatus.OK);
         } catch (NumberFormatException | NullPointerException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

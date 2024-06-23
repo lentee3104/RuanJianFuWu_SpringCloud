@@ -1,5 +1,9 @@
 package yxy.cn.service;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
+import lombok.extern.slf4j.Slf4j;
 import yxy.cn.entity.FoodEntity;
 import yxy.cn.entity.OrderDetailEntity;
 import yxy.cn.entity.OrderTableEntity;
@@ -14,6 +18,7 @@ import java.util.List;
 @Service
 @Component
 @CommonsLog
+@Slf4j
 public class OrderDetailService {
     @Resource
     private IOrderDetailRepository iOrderDetailRepository;
@@ -22,10 +27,21 @@ public class OrderDetailService {
         this.iOrderDetailRepository = iOrderDetailRepository;
     }
 
+
+    @CircuitBreaker(name = "myService", fallbackMethod = "fallbackFindByOrderTableId")
+    @RateLimiter(name = "myService")
+    @Retry(name = "myService")
     public List<OrderDetailEntity> findByOrderTableId(Integer order_id){
         return iOrderDetailRepository.findByOrderTableId(order_id);
     }
 
+    public String fallbackFindByOrderTableId(Integer order_id, Exception e) {
+        return "External service is down. Please try again later.";
+    }
+
+    @CircuitBreaker(name = "myService", fallbackMethod = "fallbackSave")
+    @RateLimiter(name = "myService")
+    @Retry(name = "myService")
     public OrderDetailEntity save(Integer od_id, Integer quantity, Integer food_id, Integer order_id){
 
         if(od_id == 0){
@@ -44,5 +60,9 @@ public class OrderDetailService {
                     .build();
             return iOrderDetailRepository.save(newOrderDetailEntity);
         }
+    }
+
+    public String fallbackSave(Integer od_id, Integer quantity, Integer food_id, Integer order_id, Exception e) {
+        return "External service is down. Please try again later.";
     }
 }

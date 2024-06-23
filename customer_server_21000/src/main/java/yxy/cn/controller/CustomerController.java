@@ -16,10 +16,10 @@ import yxy.cn.service.CustomerService;
 
 @RestController
 @RequestMapping("/customer")
+@CrossOrigin(origins = "*")
 @RefreshScope
 @Tag(name="CustomerController")
 public class CustomerController {
-    @Autowired
     @Resource
     CustomerService customerService;
 
@@ -37,6 +37,15 @@ public class CustomerController {
     public ResponseEntity<CustomerEntity> findByCustomerName(@RequestParam(name="customer_name") String customer_name){
         try{
             return new ResponseEntity<>(customerService.findByCustomerName(customer_name), HttpStatus.OK);
+        } catch (NumberFormatException | NullPointerException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/FindByCustomerNameAndPassword")
+    public ResponseEntity<CustomerEntity> findByCustomerNameAndPassword(String customer_name, String password){
+        try{
+            return new ResponseEntity<>(customerService.findByCustomerNameAndPassword(customer_name,password), HttpStatus.OK);
         } catch (NumberFormatException | NullPointerException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

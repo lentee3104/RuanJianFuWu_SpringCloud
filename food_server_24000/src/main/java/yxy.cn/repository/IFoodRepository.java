@@ -8,6 +8,6 @@ import java.util.List;
 
 @Repository
 public interface IFoodRepository extends JpaRepository<FoodEntity, Integer> {
-    List<FoodEntity> findByBusinessEntityBusinessId(Integer business_id);
+    List<FoodEntity> findByBusinessId(Integer business_id);
     FoodEntity findByFoodId(Integer food_if);
 }
