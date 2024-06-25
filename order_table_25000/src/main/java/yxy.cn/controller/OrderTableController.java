@@ -4,6 +4,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Order;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import yxy.cn.dto.DeliveryAddressDTO;
+import yxy.cn.dto.DeliveryAddressRo;
 import yxy.cn.dto.OrderTableDTO;
 import yxy.cn.entity.BusinessEntity;
 import yxy.cn.entity.CustomerEntity;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -49,10 +52,18 @@ public class OrderTableController {
             CustomerEntity customerEntity = customerFeign.findByCustomerName(user_code).getBody();
             OrderTableEntity orderTableEntity = orderTableService.findByCustomerIdAndBusinessIdAndOrderState(customerEntity.getCustomerId(), business_id, order_state);
             BusinessEntity businessEntity = businessFeign.findByBusinessId(orderTableEntity.getBusinessId()).getBody();
-            DeliveryAddressDTO deliveryAddressDTO = deliveryAddressFeign.findByDeliveryAddressId(orderTableEntity.getDeliveryAddressId()).getBody();
+            DeliveryAddressRo deliveryAddressRo = deliveryAddressFeign.findByDeliveryAddressId(orderTableEntity.getDeliveryAddressId()).getBody();
+            DeliveryAddressDTO deliveryAddressDTO = DeliveryAddressDTO.builder()
+                    .daId(deliveryAddressRo.getDaId())
+                    .contactName(deliveryAddressRo.getContactName())
+                    .contactTel(deliveryAddressRo.getContactTel())
+                    .contactSex(deliveryAddressRo.getContactSex())
+                    .address(deliveryAddressRo.getAddress())
+                    .userEntity(customerEntity)
+                    .build();
 
             OrderTableDTO orderTableDTO = OrderTableDTO.builder()
-                    .orderTableId(orderTableEntity.getOrderTableId())
+                    .orderId(orderTableEntity.getOrderTableId())
                     .orderDate(orderTableEntity.getOrderDate())
                     .orderTotal(orderTableEntity.getOrderTotal())
                     .orderState(orderTableEntity.getOrderState())
@@ -72,10 +83,18 @@ public class OrderTableController {
             OrderTableEntity orderTableEntity = orderTableService.findByOrderTableId(order_table_id);
             BusinessEntity businessEntity = businessFeign.findByBusinessId(orderTableEntity.getBusinessId()).getBody();
             CustomerEntity customerEntity = customerFeign.findByCustomerId(orderTableEntity.getCustomerId()).getBody();
-            DeliveryAddressDTO deliveryAddressDTO = deliveryAddressFeign.findByDeliveryAddressId(orderTableEntity.getDeliveryAddressId()).getBody();
+            DeliveryAddressRo deliveryAddressRo = deliveryAddressFeign.findByDeliveryAddressId(orderTableEntity.getDeliveryAddressId()).getBody();
+            DeliveryAddressDTO deliveryAddressDTO = DeliveryAddressDTO.builder()
+                    .daId(deliveryAddressRo.getDaId())
+                    .contactName(deliveryAddressRo.getContactName())
+                    .contactTel(deliveryAddressRo.getContactTel())
+                    .contactSex(deliveryAddressRo.getContactSex())
+                    .address(deliveryAddressRo.getAddress())
+                    .userEntity(customerEntity)
+                    .build();
 
             OrderTableDTO orderTableDTO = OrderTableDTO.builder()
-                    .orderTableId(order_table_id)
+                    .orderId(order_table_id)
                     .orderDate(orderTableEntity.getOrderDate())
                     .orderTotal(orderTableEntity.getOrderTotal())
                     .orderState(orderTableEntity.getOrderState())
@@ -89,37 +108,42 @@ public class OrderTableController {
         }
     }
 
-    @Modifying
-    @Transactional
-    @PostMapping("/SaveOrderTableEntity")
-    public ResponseEntity<OrderTableDTO> save(Integer order_id, LocalDateTime order_data, Integer order_state, Double order_total, Integer business_id, String user_code, Integer da_id){
-        try{
-            CustomerEntity customerEntity = customerFeign.findByCustomerName(user_code).getBody();
-            Integer customer_id = customerEntity.getCustomerId();
-            OrderTableEntity orderTableEntity = orderTableService.save(order_id, order_data, order_state, order_total, business_id, customer_id, da_id);
-            BusinessEntity businessEntity = businessFeign.findByBusinessId(business_id).getBody();
-            DeliveryAddressDTO deliveryAddressDTO = deliveryAddressFeign.findByDeliveryAddressId(da_id).getBody();
-            assert deliveryAddressDTO != null;
-            DeliveryAddressEntity deliveryAddressEntity = DeliveryAddressEntity.builder()
-                    .deliveryAddressId(da_id)
-                    .contactName(deliveryAddressDTO.getContactName())
-                    .contactSex(deliveryAddressDTO.getContactSex())
-                    .contactTel(deliveryAddressDTO.getContactTel())
-                    .address(deliveryAddressDTO.getAddress())
-                    .customerId(deliveryAddressDTO.getCustomerEntity().customerId)
+    @PostMapping("/FindByCustomerId")
+    public List<OrderTableDTO> findByCustomerId(Integer customer_id){
+        List<OrderTableEntity> orderTableEntityList = orderTableService.findByCustomerId(customer_id);
+        CustomerEntity customerEntity = customerFeign.findByCustomerId(customer_id).getBody();
+        List<OrderTableDTO> orderTableDTOList = new ArrayList<>();
+        for(OrderTableEntity orderTableEntity : orderTableEntityList){
+            BusinessEntity businessEntity = businessFeign.findByBusinessId(orderTableEntity.getBusinessId()).getBody();
+            DeliveryAddressRo deliveryAddressRo = deliveryAddressFeign.findByDeliveryAddressId(orderTableEntity.getDeliveryAddressId()).getBody();
+            DeliveryAddressDTO deliveryAddressDTO = DeliveryAddressDTO.builder()
+                    .daId(deliveryAddressRo.getDaId())
+                    .contactName(deliveryAddressRo.getContactName())
+                    .contactSex(deliveryAddressRo.getContactSex())
+                    .contactTel(deliveryAddressRo.getContactTel())
+                    .address(deliveryAddressRo.getAddress())
+                    .userEntity(customerEntity)
                     .build();
-
             OrderTableDTO orderTableDTO = OrderTableDTO.builder()
-                    .orderTableId(orderTableEntity.getOrderTableId())
+                    .orderId(orderTableEntity.getOrderTableId())
+                    .orderDate(orderTableEntity.getOrderDate())
                     .orderTotal(orderTableEntity.getOrderTotal())
                     .orderState(orderTableEntity.getOrderState())
                     .customerEntity(customerEntity)
                     .businessEntity(businessEntity)
-                    .deliveryAddressEntity(deliveryAddressEntity)
+                    .deliveryAddressDTO(deliveryAddressDTO)
                     .build();
-            return new ResponseEntity<>(orderTableDTO, HttpStatus.OK);
-        } catch (NumberFormatException | NullPointerException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            orderTableDTOList.add(orderTableDTO);
         }
+
+        return orderTableDTOList;
+    }
+
+    @Modifying
+    @Transactional
+    @PostMapping("/SaveOrderTableEntity")
+    public int save(Integer order_id, Integer order_state, Double order_total, Integer business_id, String user_code, Integer da_id){
+        CustomerEntity customerEntity = customerFeign.findByCustomerName(user_code).getBody();
+        return orderTableService.save(order_id, order_state, order_total, business_id, customerEntity.getCustomerId(), da_id);
     }
 }

@@ -8,7 +8,6 @@ import org.springframework.cloud.openfeign.FeignClient;
 
 @EnableFeignClients
 @SpringBootApplication
-@LoadBalancerClient(name = "food-server")
 public class FoodApplication24000 {
     public static void main(String[] args) {
         SpringApplication.run(FoodApplication24000.class,args);

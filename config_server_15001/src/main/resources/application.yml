@@ -12,16 +12,15 @@ spring:
 #          password:
           default-label: master #这个是默认分支
   rabbitmq: #在spring 底下
-    stream:
-      host: localhost
-      port: 5672
-      username: guest
-      password: guest
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 management:
   endpoints:
     web:
       exposure:
-        include: bus-refresh
+        include: busrefresh
 
 
 eureka: #这里都是发给服务注册中心看的

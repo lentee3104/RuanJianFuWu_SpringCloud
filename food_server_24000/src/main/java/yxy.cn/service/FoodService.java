@@ -11,6 +11,7 @@ import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,8 +34,10 @@ public class FoodService {
         return iFoodRepository.findByBusinessId(business_id);
     }
 
-    public String fallbackFindByBusinessId(Integer business_id, Exception e) {
-        return "External service is down. Please try again later.";
+    public List<FoodEntity> fallbackFindByBusinessId(Integer business_id, Exception e) {
+        log.error("Fallback method called due to exception: ", e);
+        // 你可以返回一个默认的 CustomerEntity 对象或 null
+        return new ArrayList<>();
     }
 
     @CircuitBreaker(name = "myService", fallbackMethod = "fallbackFindByFoodId")
@@ -44,7 +47,9 @@ public class FoodService {
         return iFoodRepository.findByFoodId(food_if);
     }
 
-    public String fallbackFindByFoodId(Integer food_if, Exception e) {
-        return "External service is down. Please try again later.";
+    public FoodEntity fallbackFindByFoodId(Integer food_if, Exception e) {
+        log.error("Fallback method called due to exception: ", e);
+        // 你可以返回一个默认的 CustomerEntity 对象或 null
+        return new FoodEntity();
     }
 }

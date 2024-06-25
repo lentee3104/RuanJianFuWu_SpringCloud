@@ -49,12 +49,12 @@ public class OrderDetailController {
         OrderTableEntity orderTableEntity = orderTableFeign.findByOrderTableId(order_id).getBody();
         List<OrderDetailRo> orderDetailRoList = new ArrayList<>();
         for (OrderDetailEntity orderDetailEntity : orderDetailEntityList) {
-            FoodEntity foodEntity = foodFeign.findByFoodId(orderDetailEntity.getFoodId()).getBody();
+            FoodDTO foodDTO = foodFeign.findByFoodId(orderDetailEntity.getFoodId()).getBody();
             OrderDetailRo orderDetailRo = OrderDetailRo.builder()
                     .orderId(order_id)
                     .quantity(orderDetailEntity.getQuantity())
-                    .foodId(foodEntity.getFoodId())
-                    .foodName(foodEntity.getFoodName())
+                    .foodId(foodDTO.getFoodId())
+                    .foodName(foodDTO.getFoodName())
                     .build();
             orderDetailRoList.add(orderDetailRo);
         }

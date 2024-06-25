@@ -4,18 +4,17 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import yxy.cn.dto.DeliveryAddressDTO;
-import yxy.cn.entity.BusinessEntity;
+import yxy.cn.dto.DeliveryAddressRo;
 
 import java.util.List;
 
 @FeignClient("delivery-address-server")
 public interface DeliveryAddressFeign {
     @GetMapping("/address/FindByCustomerId")
-    ResponseEntity<List<DeliveryAddressDTO>> findByCustomerId(Integer customer_id);
+    List<DeliveryAddressRo> findByCustomerId(Integer customer_id);
     @PostMapping("/address/FindByCustomerName")
-    ResponseEntity<List<DeliveryAddressDTO>> findByCustomerName(String customer_name);
+    List<DeliveryAddressRo> findByCustomerName(String customer_name);
     @PostMapping("/address/FindByDeliveryAddressId")
-    ResponseEntity<DeliveryAddressDTO> findByDeliveryAddressId(Integer da_id);
+    ResponseEntity<DeliveryAddressRo> findByDeliveryAddressId(Integer da_id);
 }

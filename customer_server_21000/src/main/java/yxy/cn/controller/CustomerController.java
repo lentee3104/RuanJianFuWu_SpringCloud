@@ -14,12 +14,16 @@ import yxy.cn.entity.CommonResult;
 import yxy.cn.entity.CustomerEntity;
 import yxy.cn.service.CustomerService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 @RequestMapping("/customer")
 @CrossOrigin(origins = "*")
 @RefreshScope
 @Tag(name="CustomerController")
 public class CustomerController {
+    private static final Logger log = LoggerFactory.getLogger(CustomerController.class);
     @Resource
     CustomerService customerService;
 
@@ -36,6 +40,7 @@ public class CustomerController {
     @PostMapping("/FindByCustomerName")
     public ResponseEntity<CustomerEntity> findByCustomerName(@RequestParam(name="customer_name") String customer_name){
         try{
+            System.out.println("调用了customer_server_21000");
             return new ResponseEntity<>(customerService.findByCustomerName(customer_name), HttpStatus.OK);
         } catch (NumberFormatException | NullPointerException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

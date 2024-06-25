@@ -11,10 +11,10 @@ import yxy.cn.entity.CustomerEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DeliveryAddressDTO {
-    public Integer deliveryAddressId;
+    public Integer daId;
     public String contactName;
     public Integer contactSex;
     public String contactTel;
     public String address;
-    public CustomerEntity customerEntity;
+    public CustomerEntity userEntity;
 }

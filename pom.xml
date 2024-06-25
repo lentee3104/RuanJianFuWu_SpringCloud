@@ -15,12 +15,14 @@
         <module>eureka_server_18001</module>
         <module>gateway_server_12000</module>
         <module>customer_server_21000</module>
+        <module>customer_server_21001</module>
         <module>business_server_22000</module>
         <module>delivery_adderss_server_23000</module>
         <module>food_server_24000</module>
         <module>order_table_25000</module>
         <module>order_detail_26000</module>
         <module>order_total_server_27000</module>
+        <module>business_server_22001</module>
     </modules>
 
     <build>

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderTableDTO {
-    public Integer orderTableId;
+    public Integer orderId;
     public LocalDateTime orderDate = LocalDateTime.now();
     public Double orderTotal;
     public Integer orderState = 0;

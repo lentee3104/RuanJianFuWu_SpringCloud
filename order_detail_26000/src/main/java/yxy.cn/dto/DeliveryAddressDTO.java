@@ -1,16 +1,16 @@
-package yxy.cn.entity;
+package yxy.cn.dto;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import yxy.cn.entity.CustomerEntity;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeliveryAddressEntity {
+public class DeliveryAddressDTO {
     public Integer daId;
     public String contactName;
     public Integer contactSex;

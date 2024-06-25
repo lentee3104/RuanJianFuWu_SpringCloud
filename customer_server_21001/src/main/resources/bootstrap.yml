@@ -1,0 +1,19 @@
+#把原先的 yml文件可以删了， 然后新建一个 bootsrap
+spring:
+  cloud:
+    config:
+      profile: dev #在dev文件夹
+      label: master #是仓库的master分支
+      name: customer_server_21001
+      discovery:
+        enabled: true #让他能够发现Eureka
+        service-id: config-server
+eureka: #这里都是发给服务注册中心看的
+  instance:
+    prefer-ip-address: true
+    instance-id: "${spring.cloud.client.ip-address}:${server.port}"
+    lease-renewal-interval-in-seconds: 5 #5秒时间，互动一次，sayHi
+    lease-expiration-duration-in-seconds: 15 #
+  client:
+    service-url: #因为eureka是集群，所以 ， 连接
+      defaultZone: "http://eurekaServer18000:18000/eureka/,http://eurekaServer18001:18001/eureka/"

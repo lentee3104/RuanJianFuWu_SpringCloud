@@ -13,6 +13,7 @@ import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,8 +36,10 @@ public class OrderDetailService {
         return iOrderDetailRepository.findByOrderTableId(order_id);
     }
 
-    public String fallbackFindByOrderTableId(Integer order_id, Exception e) {
-        return "External service is down. Please try again later.";
+    public List<OrderDetailEntity> fallbackFindByOrderTableId(Integer order_id, Exception e) {
+        log.error("Fallback method called due to exception: ", e);
+        // 你可以返回一个默认的 CustomerEntity 对象或 null
+        return new ArrayList<>();
     }
 
     @CircuitBreaker(name = "myService", fallbackMethod = "fallbackSave")
@@ -62,7 +65,9 @@ public class OrderDetailService {
         }
     }
 
-    public String fallbackSave(Integer od_id, Integer quantity, Integer food_id, Integer order_id, Exception e) {
-        return "External service is down. Please try again later.";
+    public OrderDetailEntity fallbackSave(Integer od_id, Integer quantity, Integer food_id, Integer order_id, Exception e) {
+        log.error("Fallback method called due to exception: ", e);
+        // 你可以返回一个默认的 CustomerEntity 对象或 null
+        return new OrderDetailEntity();
     }
 }

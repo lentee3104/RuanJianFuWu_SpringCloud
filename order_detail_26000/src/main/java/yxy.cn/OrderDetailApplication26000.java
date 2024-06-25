@@ -7,7 +7,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableFeignClients
 @SpringBootApplication
-@LoadBalancerClient(name = "order-detail-server")
 public class OrderDetailApplication26000 {
     public static void main(String[] args) {
         SpringApplication.run(OrderDetailApplication26000.class,args);
